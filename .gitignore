@@ -4,6 +4,7 @@
 *.dll
 *.so
 *.dylib
+air-quality-to-go
 
 # Test binary, built with `go test -c`
 *.test
