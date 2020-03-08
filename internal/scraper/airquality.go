@@ -68,7 +68,7 @@ func (fr *Row) UnmarshalJSON(b []byte) error {
 
 	var ov ObjectValue
 	if err := json.Unmarshal(b, &ov); err == nil {
-		*fr = Row(fmt.Sprintf("%.0f", ov.PrObject))
+		*fr = Row(fmt.Sprintf("%.1f", ov.PrObject))
 		return nil
 	}
 

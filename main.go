@@ -24,6 +24,7 @@ type ObjectValue struct {
 type PollutionEntry struct {
 	Date          string
 	PollutantName string
+	UnitOfMeasure string
 	DailyValues   []DailyValue
 }
 
@@ -51,43 +52,54 @@ func main() {
 		panic(err)
 	}
 
-	pollutantNames(entries)
-	fmt.Printf("%v", measuringStations(entries))
+	pEntries := pollutionEntries(entries)
 
-	// for _, entry := range entries {
-	// 	fmt.Printf("%v\n", entry.HeaderLines)
-	// }
-
-	// fmt.Printf("%v\n", entries)
-	// fmt.Printf("%s\n", string(contents))
+	b, err := json.Marshal(pEntries)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(string(b))
 }
 
-func pollutantNames(rawEntries scraper.RawDailyEntry) []PollutionEntry {
+func pollutionEntries(rawEntries scraper.RawDailyEntry) []PollutionEntry {
 	var pEntries []PollutionEntry
+	
 	for _, rawEntry := range rawEntries {
-		if pName := rawEntry.HeaderLines[0].PrObject; pName != "" {
+		var dailyValues []DailyValue
+		locationIndex := 0
+		maxHourlyValueIndex := 1
+		unitOfMeasureIndex := 1
+
+		pollutantName := rawEntry.HeaderLines[0].PrObject
+		if pollutantName != "" {
+			// PM10 index exception
+			if pollutantName == "PM10" {
+				locationIndex = 1
+				maxHourlyValueIndex = 2
+				unitOfMeasureIndex = 2
+			}
+			if len(rawEntry.Rows[1]) > 0 {
+				fmt.Printf("%v\n", rawEntry.Rows[1])
+			}
+			// Retrieve daily values for the current pollutant
+			for i := 2; i < len(rawEntry.Rows); i++ {
+				dailyValue := DailyValue{
+					Location:       string(rawEntry.Rows[i][locationIndex]),
+					MaxHourlyValue: string(rawEntry.Rows[i][maxHourlyValueIndex]),
+					// MaxHourlyValueDateTime: string(rawEntry.Rows[i][2]),
+				}
+				dailyValues = append(dailyValues, dailyValue)
+			}
+
+			// Pollutant name is retrieved from the header line
 			pEntry := PollutionEntry{
-				PollutantName: rawEntry.HeaderLines[0].PrObject,
+				PollutantName: pollutantName,
+				UnitOfMeasure: string(rawEntry.Rows[1][unitOfMeasureIndex]),
+				DailyValues:   dailyValues,
 			}
 			pEntries = append(pEntries, pEntry)
 		}
 	}
-	fmt.Printf("%v\n", pEntries)
+
 	return pEntries
-}
-
-func measuringStations(rawEntries scraper.RawDailyEntry) []DailyValue {
-	var dailyValues []DailyValue
-	for _, rawEntry := range rawEntries {
-		// fmt.Printf("%v\n", rawEntry.Rows)
-		for i := 2; i < len(rawEntry.Rows); i++ {
-			dailyValue := DailyValue{
-				Location:       string(rawEntry.Rows[i][0]),
-				MaxHourlyValue: string(rawEntry.Rows[i][1]),
-			}
-			dailyValues = append(dailyValues, dailyValue)
-		}
-	}
-
-	return dailyValues
 }
