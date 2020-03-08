@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	airqualitytogo "github.com/trampfox/air-quality-to-go"
+	"github.com/trampfox/air-quality-to-go/internal/scraper"
 )
 
 const (
@@ -54,7 +55,7 @@ func (rs *reportScraper) GetData() string {
 	}
 
 	log.Println("Retrieve pollution entries...")
-	var entries RawDailyEntry
+	var entries scraper.RawDailyEntry
 	err = json.Unmarshal([]byte(contents), &entries)
 	if err != nil {
 		panic(err)
@@ -70,7 +71,7 @@ func (rs *reportScraper) GetData() string {
 	return string(b)
 }
 
-func (rs *reportScraper) pollutionEntries(rawEntries RawDailyEntry) []PollutionEntry {
+func (rs *reportScraper) pollutionEntries(rawEntries scraper.RawDailyEntry) []PollutionEntry {
 	var pEntries []PollutionEntry
 
 	for _, rawEntry := range rawEntries {
@@ -112,7 +113,7 @@ func (rs *reportScraper) pollutionEntries(rawEntries RawDailyEntry) []PollutionE
 	return pEntries
 }
 
-func (rs *reportScraper) getValueDateTime(rows []Row, pollutantName string) string {
+func (rs *reportScraper) getValueDateTime(rows []scraper.Row, pollutantName string) string {
 	if pollutantName == pm10Name || pollutantName == pm25Name {
 		return ""
 	}
@@ -120,7 +121,7 @@ func (rs *reportScraper) getValueDateTime(rows []Row, pollutantName string) stri
 	return string(rows[2])
 }
 
-func (rs *reportScraper) getValueDescription(rows []Row, pollutantName string) string {
+func (rs *reportScraper) getValueDescription(rows []scraper.Row, pollutantName string) string {
 	descriptionIndex := 1
 	if pollutantName == pm10Name {
 		descriptionIndex = 2
