@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/trampfox/air-quality-to-go/internal/scraper"
+	"github.com/trampfox/air-quality-to-go/pkg/scraper"
 )
 
 func main() {
