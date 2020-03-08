@@ -13,6 +13,6 @@ func main() {
 		panic(err)
 	}
 
-	data := rs.GetData()
+	data := rs.GetStringData()
 	fmt.Println(data)
 }

@@ -4,10 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 
-	airqualitytogo "github.com/trampfox/air-quality-to-go"
 	"github.com/trampfox/air-quality-to-go/internal/scraper"
 )
 
@@ -35,13 +33,13 @@ type DailyValue struct {
 	ValueDateTime string
 }
 
-func ReportScraper(dateString string) (airqualitytogo.Scraper, error) {
+func ReportScraper(dateString string) (Scraper, error) {
 	return &reportScraper{dateString: dateString}, nil
 }
 
-func (rs *reportScraper) GetData() string {
+func (rs *reportScraper) GetData() []PollutionEntry {
 	dailyReportUrl := fmt.Sprintf(reportUrl, rs.dateString)
-	log.Printf("Downloading report from %s", dailyReportUrl)
+	fmt.Printf("Downloading report from %s", dailyReportUrl)
 
 	response, err := http.Get(dailyReportUrl)
 	if err != nil {
@@ -54,7 +52,6 @@ func (rs *reportScraper) GetData() string {
 		panic(err)
 	}
 
-	log.Println("Retrieve pollution entries...")
 	var entries scraper.RawDailyEntry
 	err = json.Unmarshal([]byte(contents), &entries)
 	if err != nil {
@@ -63,6 +60,11 @@ func (rs *reportScraper) GetData() string {
 
 	pEntries := rs.pollutionEntries(entries)
 
+	return pEntries
+}
+
+func (rs *reportScraper) GetStringData() string {
+	pEntries := rs.GetData()
 	b, err := json.Marshal(pEntries)
 	if err != nil {
 		panic(err)
