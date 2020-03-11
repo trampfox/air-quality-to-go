@@ -8,7 +8,7 @@ import (
 
 func main() {
 	// TODO get date from argument
-	rs, err := scraper.ReportScraper("20200305")
+	rs, err := scraper.ReportScraper("20200308")
 	if err != nil {
 		panic(err)
 	}
