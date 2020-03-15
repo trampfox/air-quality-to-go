@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	rootCmd.AddCommand(reportCmd)
+	rootCmd.AddCommand(ipqaCmd)
 }
 
 var ipqaCmd = &cobra.Command{
