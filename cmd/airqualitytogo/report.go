@@ -6,7 +6,7 @@ import (
 	"regexp"
 
 	"github.com/spf13/cobra"
-	"github.com/trampfox/air-quality-to-go/pkg/scraper"
+	scraper "github.com/trampfox/air-quality-to-go/pkg/scraper/cittametropolitana"
 )
 
 func init() {
