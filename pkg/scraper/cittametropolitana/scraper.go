@@ -5,3 +5,7 @@ type Scraper interface {
 	GetStringData() string
 	GetData() []PollutionEntry
 }
+
+type IPQAScraper interface {
+	GetStringData() string
+}
