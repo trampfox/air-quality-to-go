@@ -1,18 +1,22 @@
-package main
+package cmd
 
 import (
 	"fmt"
+	"os"
 
-	"github.com/trampfox/air-quality-to-go/pkg/scraper"
+	"github.com/spf13/cobra"
 )
 
-func main() {
-	// TODO get date from argument
-	rs, err := scraper.ReportScraper("20200308")
-	if err != nil {
-		panic(err)
+var (
+	rootCmd = &cobra.Command{
+		Use:   "airqualitytogo",
+		Short: "AirQualityToGo is a CLI tool to retrieve Turin air quality data from different data sources",
 	}
+)
 
-	data := rs.GetStringData()
-	fmt.Println(data)
+func Execute() {
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
