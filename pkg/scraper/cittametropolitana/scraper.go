@@ -1,5 +1,7 @@
 package scraper
 
+import "github.com/trampfox/air-quality-to-go/internal/scraper"
+
 // Scraper is an interface for different type of scraper objects
 type Scraper interface {
 	GetStringData() string
@@ -7,5 +9,5 @@ type Scraper interface {
 }
 
 type IPQAScraper interface {
-	GetStringData() string
+	GetStringData() scraper.IPQAData
 }
