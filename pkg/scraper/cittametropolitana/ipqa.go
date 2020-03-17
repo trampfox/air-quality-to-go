@@ -26,12 +26,20 @@ var (
 
 type collyIpqaScraper struct{}
 
+type IPQAData struct {
+	Date                int64
+	TodayValue          string
+	TodayDescription    string
+	TomorrowValue       string
+	TomorrowDescription string
+}
+
 func CollyIPQAScraper() (IPQAScraper, error) {
 	return &collyIpqaScraper{}, nil
 }
 
-func (s *collyIpqaScraper) GetStringData() scraper.IPQAData {
-	ipqaData := scraper.IPQAData{
+func (s *collyIpqaScraper) GetStringData() IPQAData {
+	ipqaData := IPQAData{
 		Date: time.Now().Unix(),
 	}
 	c := colly.NewCollector()
