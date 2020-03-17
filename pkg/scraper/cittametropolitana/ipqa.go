@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/gocolly/colly/v2"
-	"github.com/trampfox/air-quality-to-go/internal/scraper"
 )
 
 var (
@@ -53,7 +52,7 @@ func (s *collyIpqaScraper) GetStringData() IPQAData {
 			if index == 0 {
 				ipqaData.TodayValue = ipqaValue[ipqaClass]
 				ipqaData.TodayDescription = ipqaDescription[ipqaClass]
-			// whereas the second column contains the tomorrow value
+				// whereas the second column contains the tomorrow value
 			} else if index == 1 {
 				ipqaData.TomorrowValue = ipqaValue[ipqaClass]
 				ipqaData.TomorrowDescription = ipqaDescription[ipqaClass]
