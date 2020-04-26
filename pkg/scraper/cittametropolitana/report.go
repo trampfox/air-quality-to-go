@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/trampfox/air-quality-to-go/internal/scraper"
 )
@@ -20,7 +21,7 @@ type reportScraper struct {
 }
 
 type PollutionEntry struct {
-	Date             string
+	Date             int64
 	PollutantName    string
 	ValueDescription string
 	UnitOfMeasure    string
@@ -107,6 +108,7 @@ func (rs *reportScraper) pollutionEntries(rawEntries scraper.RawDailyEntry) []Po
 				ValueDescription: rs.getValueDescription(rawEntry.Rows[0], pollutantName),
 				UnitOfMeasure:    string(rawEntry.Rows[1][unitOfMeasureIndex]),
 				DailyValues:      dailyValues,
+				Date:             time.Now().Unix(),
 			}
 			pEntries = append(pEntries, pEntry)
 		}
